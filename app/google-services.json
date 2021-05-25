@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "942191699736",
+    "project_id": "memorycards-66c8b",
+    "storage_bucket": "memorycards-66c8b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942191699736:android:29eb03777645bf618ee06d",
+        "android_client_info": {
+          "package_name": "ru.lebedeva.memorycard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942191699736-q0gmrscau94oevmn83g4ru8ajmo38n3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANZGmHnuJlAIMCsgJRMmwWU6nV7dl3B14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942191699736-q0gmrscau94oevmn83g4ru8ajmo38n3t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
