@@ -48,7 +48,13 @@ class MainRepository(
             }
         }
 
-    suspend fun isLoggedIn(): Resource<Boolean> = withContext(Dispatchers.IO) {
+    suspend fun getMemoryCardById(cardId: String): Resource<MemoryCard> = withContext(Dispatchers.IO){
+        return@withContext checkIfNetworkAvailable {
+            Resource.Success(firebase.getMemoryCardById(cardId))
+        }
+    }
+
+            suspend fun isLoggedIn(): Resource<Boolean> = withContext(Dispatchers.IO) {
         return@withContext checkIfNetworkAvailable {
             Resource.Success(firebase.isLoggedIn)
         }

@@ -1,11 +1,9 @@
 package ru.lebedeva.memorycard.app.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,9 +12,7 @@ import ru.lebedeva.memorycard.app.BaseFragment
 import ru.lebedeva.memorycard.app.MainActivity
 import ru.lebedeva.memorycard.app.adapters.MemoryCardsAdapter
 import ru.lebedeva.memorycard.app.viewmodels.ListMemoryCardViewModel
-import ru.lebedeva.memorycard.app.viewmodels.LoginViewModel
 import ru.lebedeva.memorycard.databinding.FragmentListMemoryCardBinding
-import ru.lebedeva.memorycard.databinding.FragmentLoginBinding
 import ru.lebedeva.memorycard.domain.Resource
 
 class ListMemoryCardFragment : BaseFragment() {
@@ -42,8 +38,16 @@ class ListMemoryCardFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         viewModel.getUserCards()
         cardAdapter = MemoryCardsAdapter()
+        cardAdapter.setOnItemClickListener { memoryCard ->
+            findNavController().navigate(
+                ListMemoryCardFragmentDirections.actionListMemoryCardFragmentToDetailMemoryCardFragment(
+                    memoryCard.id!!
+                )
+            )
+        }
 
         with(binding) {
             recyclerView.adapter = cardAdapter
@@ -74,6 +78,20 @@ class ListMemoryCardFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        (requireActivity() as AppCompatActivity).supportActionBar?.let {
+            it.title = "Список карточек"
+            it.setHomeButtonEnabled(false)
+            it.setDisplayHomeAsUpEnabled(false)
+        }
+        menu.findItem(R.id.action_save_card).isVisible = false
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_menu, menu)
     }
 
 }

@@ -1,29 +1,44 @@
 package ru.lebedeva.memorycard.app.fragments
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.material.snackbar.Snackbar
-import pub.devrel.easypermissions.EasyPermissions
-import ru.lebedeva.memorycard.databinding.FragmentDetailMemoryCardBinding
-import ru.lebedeva.memorycard.databinding.FragmentLoginBinding
 
-class DetailMemoryCardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+import android.content.Context
+import android.os.Bundle
+import android.text.format.DateUtils
+import android.view.*
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import ru.lebedeva.memorycard.R
+import ru.lebedeva.memorycard.app.BaseFragment
+import ru.lebedeva.memorycard.app.MainActivity
+import ru.lebedeva.memorycard.app.viewmodels.CreateMemoryCardViewModel
+import ru.lebedeva.memorycard.app.viewmodels.DetailMemoryCardViewModel
+import ru.lebedeva.memorycard.databinding.FragmentDetailMemoryCardBinding
+import ru.lebedeva.memorycard.domain.Resource
+import java.util.*
+
+class DetailMemoryCardFragment : BaseFragment() {
 
     private var _binding: FragmentDetailMemoryCardBinding? = null
 
     private val binding get() = _binding!!
 
     private var map: GoogleMap? = null
-    private lateinit var manager: LocationManager
+    private val args by navArgs<DetailMemoryCardFragmentArgs>()
+    private val memoryCardId by lazy { args.memoryCardId }
+
+    private val viewModel: DetailMemoryCardViewModel by viewModels {
+        (activity as MainActivity).viewModelProviderFactory
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,81 +51,99 @@ class DetailMemoryCardFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requestPermission()
-        manager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        launchMap(savedInstanceState)
         setHasOptionsMenu(true)
+        launchMap(savedInstanceState)
+        viewModel.getMemoryCardById(memoryCardId)
+        viewModel.card.observe(viewLifecycleOwner,{result ->
+            when(result){
+                is Resource.Success ->{
+                    hideLoadingBar()
+                    setMarkerOnMapAndFocus(LatLng(result.data!!.location!!.latitude,result.data.location!!.longitude))
+                    binding.tvDescription.text = result.data.description
+                    binding.tvTitle.text = result.data.title
+                    val calendar = Calendar.getInstance()
+                    calendar.time = result.data.date!!.toDate()
+                    setDateTimeInTextView(calendar,binding.tvDate,requireContext())
+                }
+                is Resource.Error ->{
+                    hideLoadingBar()
+                    snackbar("Ошибка, попробуйте позже")
+                }
+                is Resource.Loading ->{
+                    showLoadingBar()
+                }
+            }
+        })
+    }
+
+    private fun setDateTimeInTextView(
+        pickedDateTime: Calendar,
+        view: TextView,
+        context: Context
+    ) {
+        view.text = DateUtils.formatDateTime(
+            context,
+            pickedDateTime.timeInMillis,
+            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
+                    or DateUtils.FORMAT_SHOW_TIME
+        )
+
     }
 
     private fun launchMap(savedInstanceState: Bundle?) {
         binding.mapView.onCreate(savedInstanceState)
-        mapUISettings()
         binding.mapView.getMapAsync { googleMap ->
             googleMap.uiSettings.isMyLocationButtonEnabled = false
             map = googleMap
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermission()
-            } else {
-                map?.isMyLocationEnabled = true
+        }
+    }
+
+    private fun setMarkerOnMapAndFocus(location: LatLng) {
+        map?.addMarker(
+            MarkerOptions()
+                .position(location)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                .title("Место воспоминания")
+        )
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                location, 15F
+            )
+        )
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        (requireActivity() as AppCompatActivity).supportActionBar?.let {
+            it.title = "Подробности карточки"
+            it.setHomeButtonEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().popBackStack()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
             }
         }
     }
 
-    private fun mapUISettings() {
-        map?.uiSettings?.isCompassEnabled = false
-        map?.uiSettings?.isMyLocationButtonEnabled = false
-    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    private fun requestPermission() {
-        if (EasyPermissions.hasPermissions(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        ) {
-            return
-        }
-        EasyPermissions.requestPermissions(
-            this,
-            "Приложение не будет правильно работать, если вы не разрешите отслеживание локации!",
-            0,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-    }
-
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            Snackbar.make(requireView(), "Отслеживание включено", Snackbar.LENGTH_SHORT).show()
-        } else {
-            requestPermission()
-        }
-    }
-
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        Snackbar.make(requireView(), "Ошибка получения нужных разрешений", Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
 
     override fun onResume() {
         super.onResume()
