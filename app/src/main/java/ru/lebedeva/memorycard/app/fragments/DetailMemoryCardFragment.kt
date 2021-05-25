@@ -68,7 +68,9 @@ class DetailMemoryCardFragment : BaseFragment() {
                     )
                     binding.tvDescription.text = result.data.description
                     binding.tvTitle.text = result.data.title
-                    binding.ivImage.load(result.data.imageUri)
+                    binding.ivImage.load(result.data.imageUri) {
+                        placeholder(R.drawable.placeholder)
+                    }
                     val calendar = Calendar.getInstance()
                     calendar.time = result.data.date!!.toDate()
                     setDateTimeInTextView(calendar, binding.tvDate, requireContext())
