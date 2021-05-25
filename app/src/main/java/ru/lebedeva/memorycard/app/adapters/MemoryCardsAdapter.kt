@@ -8,11 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ru.lebedeva.memorycard.data.LocationMapper
 import ru.lebedeva.memorycard.databinding.ItemMemoryCardRvBinding
 import ru.lebedeva.memorycard.domain.MemoryCard
 import java.util.*
 
-class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>() {
+class MemoryCardsAdapter(
+    private val addressMapperMapper: LocationMapper
+) : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>() {
 
     private val callback = object : DiffUtil.ItemCallback<MemoryCard>() {
         override fun areItemsTheSame(oldItem: MemoryCard, newItem: MemoryCard): Boolean {
@@ -48,6 +51,10 @@ class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val memoryCard = cards[position]
+        holder.binding.tvCardAddress.text = addressMapperMapper.toAddress(
+            memoryCard.location!!.latitude,
+            memoryCard.location!!.longitude
+        )
         onItemClickListener?.let {
             holder.setOnItemClickListener(it)
         }

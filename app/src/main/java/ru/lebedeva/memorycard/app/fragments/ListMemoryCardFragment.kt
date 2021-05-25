@@ -12,6 +12,7 @@ import ru.lebedeva.memorycard.app.BaseFragment
 import ru.lebedeva.memorycard.app.MainActivity
 import ru.lebedeva.memorycard.app.adapters.MemoryCardsAdapter
 import ru.lebedeva.memorycard.app.viewmodels.ListMemoryCardViewModel
+import ru.lebedeva.memorycard.data.LocationMapper
 import ru.lebedeva.memorycard.databinding.FragmentListMemoryCardBinding
 import ru.lebedeva.memorycard.domain.Resource
 
@@ -40,7 +41,9 @@ class ListMemoryCardFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         viewModel.getUserCards()
-        cardAdapter = MemoryCardsAdapter()
+
+        cardAdapter = MemoryCardsAdapter(LocationMapper(requireContext()))
+
         cardAdapter.setOnItemClickListener { memoryCard ->
             findNavController().navigate(
                 ListMemoryCardFragmentDirections.actionListMemoryCardFragmentToDetailMemoryCardFragment(
