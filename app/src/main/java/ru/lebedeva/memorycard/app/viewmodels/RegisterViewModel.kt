@@ -20,7 +20,7 @@ class RegisterViewModel(
         if (_signUpStatus.value is Resource.Loading) {
             return@launch
         }
-        _signUpStatus.postValue(Resource.Loading)
+        _signUpStatus.postValue(Resource.Loading())
         if (email.isEmpty()) {
             _signUpStatus.postValue(Resource.Error(msg = "Введите электронную почту"))
             return@launch

@@ -56,7 +56,7 @@ class RegisterFragment : BaseFragment() {
                     hideLoadingBar()
                     snackbar(it.msg!!)
                 }
-                Resource.Loading -> showLoadingBar()
+                is Resource.Loading -> showLoadingBar()
             }
         })
     }

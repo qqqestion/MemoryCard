@@ -26,7 +26,7 @@ class LoginViewModel(
             Timber.d("Value is loading")
             return@launch
         }
-        _signInStatus.postValue(Resource.Loading)
+        _signInStatus.postValue(Resource.Loading())
         val response = repository.signIn(email, password)
         _signInStatus.postValue(response)
     }

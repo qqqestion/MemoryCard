@@ -62,7 +62,7 @@ class LoginFragment : BaseFragment() {
                     hideLoadingBar()
                     snackbar(it.msg.toString())
                 }
-                Resource.Loading -> showLoadingBar()
+                is Resource.Loading -> showLoadingBar()
             }
         })
     }

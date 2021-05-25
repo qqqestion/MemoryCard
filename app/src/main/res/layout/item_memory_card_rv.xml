@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/corner_radius"
-    android:layout_margin="@dimen/margin_16"
-    app:cardElevation="@dimen/cardview_elevation">
-    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_12"
-        android:layout_gravity="center">
-        <TextView
-            android:id="@+id/cardTitle"
-            android:layout_width="0dp"
+        android:layout_margin="@dimen/margin_16"
+        app:cardCornerRadius="@dimen/corner_radius"
+        app:cardElevation="@dimen/cardview_elevation"
+        >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Title"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/margin_8"
-            android:textSize="@dimen/card_header_text_size"
-            android:textColor="@color/primary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_12"
+            >
 
         <TextView
-            android:id="@+id/cardDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:text="16.12.2000"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/margin_8"
-            android:layout_marginTop="@dimen/margin_8"
-            android:textSize="@dimen/card_main_text_size"
-            android:textColor="@color/main_text"
-            app:layout_constraintTop_toBottomOf="@id/cardTitle"
-            app:layout_constraintEnd_toEndOf="parent"/>
+                android:id="@+id/tvCardTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/card_header_text_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Title"
+                />
 
         <TextView
-            android:id="@+id/cardAddress"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:text="СПБ, хата твоей мамы"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/margin_8"
-            android:layout_marginTop="@dimen/margin_8"
-            android:textSize="@dimen/card_main_text_size"
-            android:textColor="@color/main_text"
-            app:layout_constraintTop_toBottomOf="@id/cardDate"
-            app:layout_constraintEnd_toEndOf="parent"/>
+                android:id="@+id/tvCardDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_8"
+                android:textColor="@color/main_text"
+                android:textSize="@dimen/card_main_text_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCardTitle"
+                tools:text="16.12.2000"
+                />
 
-
-
-
+        <TextView
+                android:id="@+id/tvCardAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_8"
+                android:textColor="@color/main_text"
+                android:textSize="@dimen/card_main_text_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCardDate"
+                tools:text="СПБ, хата твоей мамы"
+                />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 </androidx.cardview.widget.CardView>

@@ -30,7 +30,7 @@ sealed class Resource<out T>(
      * Объект, отражающий состояние "Загрузка"
      *
      */
-    object Loading : Resource<Unit>()
+    class Loading<T> : Resource<T>()
 
     /**
      * Класс, отражающий состояние "Ошибка"
