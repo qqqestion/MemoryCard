@@ -1,5 +1,6 @@
 package ru.lebedeva.memorycard.app.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,19 +17,17 @@ class LoginViewModel(
     private val repository: MainRepository
 ) : ViewModel() {
 
-    val signUpStatus = MutableLiveData<Resource<Unit>>()
+    private val _signInStatus = MutableLiveData<Resource<Unit>>()
+    val signInStatus: LiveData<Resource<Unit>> = _signInStatus
 
-    fun signUp() = viewModelScope.launch {
-        val memoryCard = MemoryCard(
-            location = GeoPoint(1.1313, 1.1313),
-            title = "Воспоминание о",
-            date = Timestamp(Date()),
-            description = "Empty description"
-        )
-        Timber.d(if (repository.createMemoryCard(memoryCard) is Resource.Success) "Success" else "Failed")
-//        val response = repository.createMemoryCard(memoryCard)
-        val response = repository.getAllMemoryCardForCurrentUser()
-        Timber.d("${response.data}")
-//        signUpStatus.postValue(response)
+    fun signIn(email: String, password: String) = viewModelScope.launch {
+        Timber.d("Sign in")
+        if (_signInStatus.value is Resource.Loading) {
+            Timber.d("Value is loading")
+            return@launch
+        }
+        _signInStatus.postValue(Resource.Loading)
+        val response = repository.signIn(email, password)
+        _signInStatus.postValue(response)
     }
 }

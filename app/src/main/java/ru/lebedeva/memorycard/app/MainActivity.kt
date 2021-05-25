@@ -11,7 +11,7 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     lateinit var viewModelProviderFactory: ViewModelProviderFactory
 

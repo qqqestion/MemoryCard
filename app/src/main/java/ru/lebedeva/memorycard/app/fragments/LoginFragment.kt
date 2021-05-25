@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
+import androidx.navigation.fragment.findNavController
 import ru.lebedeva.memorycard.app.BaseFragment
 import ru.lebedeva.memorycard.app.MainActivity
 import ru.lebedeva.memorycard.app.viewmodels.LoginViewModel
@@ -32,17 +35,34 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.signUp()
 
-        viewModel.signUpStatus.observe(viewLifecycleOwner, {
+        with(binding) {
+            btnGoToRegistration.setOnClickListener {
+                findNavController().navigate(
+                    LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+                )
+            }
+            btnLogin.setOnClickListener {
+                viewModel.signIn(
+                    etEmail.text.toString(),
+                    etPassword.text.toString()
+                )
+            }
+        }
+
+        viewModel.signInStatus.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    snackbar("Регистрация прошла успешно")
+                    hideLoadingBar()
+                    findNavController().navigate(
+                        LoginFragmentDirections.actionLoginFragmentToListMemoryCardFragment()
+                    )
                 }
                 is Resource.Error -> {
+                    hideLoadingBar()
                     snackbar(it.msg.toString())
                 }
-                Resource.Loading -> Unit
+                Resource.Loading -> showLoadingBar()
             }
         })
     }

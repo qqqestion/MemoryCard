@@ -4,7 +4,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 open class BaseFragment : Fragment() {
@@ -14,7 +13,7 @@ open class BaseFragment : Fragment() {
     fun hideLoadingBar() = loadingBarVisibility(false)
 
     private fun loadingBarVisibility(isVisible: Boolean) = with(activity) {
-        this?.mainLoadingProgressBar?.isVisible = isVisible
+        (this as? MainActivity)?.binding?.mainLoadingProgressBar?.isVisible = isVisible
     }
 
     fun snackbar(msg: String) = Snackbar.make(
