@@ -1,5 +1,7 @@
 package ru.lebedeva.memorycard.domain
 
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.lebedeva.memorycard.app.FirebaseApi
@@ -57,13 +59,14 @@ class MainRepository(
             }
         }
 
-    suspend fun getMemoryCardById(cardId: String): Resource<MemoryCard> = withContext(Dispatchers.IO){
-        return@withContext checkIfNetworkAvailable {
-            Resource.Success(firebase.getMemoryCardById(cardId))
+    suspend fun getMemoryCardById(cardId: String): Resource<MemoryCard> =
+        withContext(Dispatchers.IO) {
+            return@withContext checkIfNetworkAvailable {
+                Resource.Success(firebase.getMemoryCardById(cardId))
+            }
         }
-    }
 
-    suspend fun deleteCardById(cardId: String): Resource<Unit> = withContext(Dispatchers.IO){
+    suspend fun deleteCardById(cardId: String): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext checkIfNetworkAvailable {
             firebase.deleteMemoryCardById(cardId)
             Timber.d("Sign out success")
@@ -71,7 +74,7 @@ class MainRepository(
         }
     }
 
-            suspend fun isLoggedIn(): Resource<Boolean> = withContext(Dispatchers.IO) {
+    suspend fun isLoggedIn(): Resource<Boolean> = withContext(Dispatchers.IO) {
         return@withContext checkIfNetworkAvailable {
             Resource.Success(firebase.isLoggedIn)
         }
@@ -93,7 +96,7 @@ class MainRepository(
             action()
         } catch (e: Throwable) {
             Timber.d(e, "Error during processing request")
-            Resource.Error(msg = "Ошибка сервера. Попробуйте еще раз")
+            Resource.Error(msg = "Ошибка сервера", error = e)
         }
     }
 }

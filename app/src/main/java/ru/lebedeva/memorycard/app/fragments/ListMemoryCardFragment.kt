@@ -16,6 +16,7 @@ import ru.lebedeva.memorycard.app.viewmodels.ListMemoryCardViewModel
 import ru.lebedeva.memorycard.data.LocationMapper
 import ru.lebedeva.memorycard.databinding.FragmentListMemoryCardBinding
 import ru.lebedeva.memorycard.domain.Resource
+import timber.log.Timber
 
 class ListMemoryCardFragment : BaseFragment() {
 

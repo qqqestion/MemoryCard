@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.launch
 import ru.lebedeva.memorycard.domain.MainRepository
 import ru.lebedeva.memorycard.domain.Resource
@@ -38,6 +40,11 @@ class RegisterViewModel(
             return@launch
         }
         val response = repository.signUp(email, password)
+        if (response is Resource.Error) {
+            if (response.error is FirebaseAuthWeakPasswordException) {
+                response.msg = "Введеный пароль слишком простой"
+            }
+        }
         _signUpStatus.postValue(response)
     }
 }
