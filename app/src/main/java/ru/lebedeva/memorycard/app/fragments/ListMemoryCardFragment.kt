@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import ru.lebedeva.memorycard.R
 import ru.lebedeva.memorycard.app.BaseFragment
 import ru.lebedeva.memorycard.app.MainActivity
 import ru.lebedeva.memorycard.app.adapters.MemoryCardsAdapter
@@ -64,6 +66,9 @@ class ListMemoryCardFragment : BaseFragment() {
                 }
             }
         })
+        binding.fab.setOnClickListener {
+            findNavController().navigate(R.id.action_listMemoryCardFragment_to_createMemoryCardFragment)
+        }
     }
 
     override fun onDestroyView() {

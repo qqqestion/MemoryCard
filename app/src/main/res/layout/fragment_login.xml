@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:textColor="@color/login_title_color"
             android:textSize="@dimen/card_main_text_size" />
     </com.google.android.material.textfield.TextInputLayout>
