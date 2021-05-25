@@ -53,4 +53,11 @@ class FirebaseApi {
             .await()
             .toObjects(MemoryCard::class.java)
     }
+
+    suspend fun getMemoryCardById(cardId: String): MemoryCard {
+        return cardsCollection.document(cardId)
+            .get()
+            .await()
+            .toObject(MemoryCard::class.java)!!
+    }
 }

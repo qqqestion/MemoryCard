@@ -20,7 +20,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/containerTitle"
+        android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
@@ -33,7 +33,7 @@
        >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etEmail"
+            android:id="@+id/etTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/login_title_color"
@@ -44,8 +44,8 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <EditText
-        android:id="@+id/containerDate"
-        app:layout_constraintTop_toBottomOf="@id/containerTitle"
+        android:id="@+id/tvDate"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toEndOf="@+id/ivImage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -71,6 +71,7 @@
             android:hint="Описание"
             >
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/login_title_color"
