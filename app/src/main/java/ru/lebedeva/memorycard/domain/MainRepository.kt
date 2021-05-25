@@ -29,6 +29,15 @@ class MainRepository(
             }
         }
 
+    suspend fun signOut(): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            return@withContext checkIfNetworkAvailable {
+                firebase.signOut()
+                Timber.d("Sign out success")
+                Resource.Success(Unit)
+            }
+        }
+
     suspend fun createMemoryCard(card: MemoryCard): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext checkIfNetworkAvailable {
@@ -51,6 +60,14 @@ class MainRepository(
     suspend fun getMemoryCardById(cardId: String): Resource<MemoryCard> = withContext(Dispatchers.IO){
         return@withContext checkIfNetworkAvailable {
             Resource.Success(firebase.getMemoryCardById(cardId))
+        }
+    }
+
+    suspend fun deleteCardById(cardId: String): Resource<Unit> = withContext(Dispatchers.IO){
+        return@withContext checkIfNetworkAvailable {
+            firebase.deleteMemoryCardById(cardId)
+            Timber.d("Sign out success")
+            Resource.Success(Unit)
         }
     }
 

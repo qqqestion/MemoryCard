@@ -17,10 +17,17 @@ class ListMemoryCardViewModel(
     private val _cards = MutableLiveData<Resource<List<MemoryCard>>>()
     val cards: LiveData<Resource<List<MemoryCard>>> = _cards
 
+    private val _signOutStatus = MutableLiveData<Resource<Unit>>()
+    val signOutStatus: LiveData<Resource<Unit>> = _signOutStatus
+
     fun getUserCards() = viewModelScope.launch {
         _cards.postValue(Resource.Loading())
         val response = repository.getAllMemoryCardForCurrentUser()
         Timber.d("${response.data}")
         _cards.postValue(response)
+    }
+
+    fun signOut() = viewModelScope.launch {
+        _signOutStatus.postValue(repository.signOut())
     }
 }

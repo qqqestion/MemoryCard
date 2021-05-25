@@ -16,6 +16,9 @@ class DetailMemoryCardViewModel(
     private val _card = MutableLiveData<Resource<MemoryCard>>()
     val card: LiveData<Resource<MemoryCard>> = _card
 
+    private val _deleteIsSuccess = MutableLiveData<Resource<Unit>>()
+    val deleteIsSuccess: LiveData<Resource<Unit>> = _deleteIsSuccess
+
 
     fun getMemoryCardById(cardId: String) = viewModelScope.launch {
         _card.postValue(Resource.Loading())
@@ -23,4 +26,12 @@ class DetailMemoryCardViewModel(
         Timber.d("${response.data}")
         _card.postValue(response)
     }
+
+
+    fun deleteCardById(cardId: String) = viewModelScope.launch {
+        _deleteIsSuccess.postValue(Resource.Loading())
+        val response = repository.deleteCardById(cardId)
+        _deleteIsSuccess.postValue(response)
+    }
+
 }
