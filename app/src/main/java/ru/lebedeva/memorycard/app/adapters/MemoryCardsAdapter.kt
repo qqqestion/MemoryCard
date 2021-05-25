@@ -42,7 +42,7 @@ class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>()
 
     private var onItemClickListener: ((MemoryCard) -> Unit)? = null
 
-    fun setOnItemClickListener(i:((MemoryCard) -> Unit)){
+    fun setOnItemClickListener(i: (MemoryCard) -> Unit) {
         onItemClickListener = i
     }
 
@@ -50,6 +50,11 @@ class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>()
         val memoryCard = cards[position]
         onItemClickListener?.let {
             holder.setOnItemClickListener(it)
+        }
+        holder.binding.clItem.setOnClickListener {
+            onItemClickListener?.let { click ->
+                click(memoryCard)
+            }
         }
         holder.bind(memoryCard)
 
@@ -60,15 +65,13 @@ class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>()
     }
 
 
-
-
     class ViewHolder(
-        private val binding: ItemMemoryCardRvBinding
+        val binding: ItemMemoryCardRvBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private var _onItemClickListener: ((MemoryCard) -> Unit)? = null
 
-        fun setOnItemClickListener(i:((MemoryCard) -> Unit)){
+        fun setOnItemClickListener(i: ((MemoryCard) -> Unit)) {
             _onItemClickListener = i
         }
 
@@ -78,11 +81,11 @@ class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>()
                 val calendar = Calendar.getInstance()
                 calendar.time = card.date!!.toDate()
                 setDateTimeInTextView(calendar, tvCardDate, this@ViewHolder.itemView.context)
-                clItem.setOnClickListener {
-                    _onItemClickListener?.let { click ->
-                        click(card)
-                    }
-                }
+//                clItem.setOnClickListener {
+//                    _onItemClickListener?.let { click ->
+//                        click(card)
+//                    }
+//                }
             }
         }
 

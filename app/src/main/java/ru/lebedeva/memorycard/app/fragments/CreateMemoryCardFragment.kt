@@ -98,16 +98,16 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
         binding.tvDate.setOnClickListener {
             pickDateTime()
         }
-        viewModel.uploadCardStatus.observe(viewLifecycleOwner,{result ->
-            when(result){
-                is Resource.Success ->{
+        viewModel.uploadCardStatus.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Resource.Success -> {
                     hideLoadingBar()
                     findNavController().popBackStack()
                 }
                 is Resource.Loading -> {
                     showLoadingBar()
                 }
-                is Resource.Error ->{
+                is Resource.Error -> {
                     hideLoadingBar()
                     snackbar("Ошибка создания карточки(")
                 }
@@ -195,7 +195,7 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
                 needDatetime.set(year, month, day, hour, minute)
                 setDateTimeInTextView(pickedDateTime)
                 isEnterDatetime = true
-            }, startHour, startMinute, false).show()
+            }, startHour, startMinute, true).show()
         }, startYear, startMonth, startDay).show()
     }
 

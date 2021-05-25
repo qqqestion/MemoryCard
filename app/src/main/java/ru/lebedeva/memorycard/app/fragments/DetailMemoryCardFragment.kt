@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.load
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -33,6 +34,7 @@ class DetailMemoryCardFragment : BaseFragment() {
     private val binding get() = _binding!!
 
     private var map: GoogleMap? = null
+
     private val args by navArgs<DetailMemoryCardFragmentArgs>()
     private val memoryCardId by lazy { args.memoryCardId }
 
@@ -54,22 +56,28 @@ class DetailMemoryCardFragment : BaseFragment() {
         setHasOptionsMenu(true)
         launchMap(savedInstanceState)
         viewModel.getMemoryCardById(memoryCardId)
-        viewModel.card.observe(viewLifecycleOwner,{result ->
-            when(result){
-                is Resource.Success ->{
+        viewModel.card.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Resource.Success -> {
                     hideLoadingBar()
-                    setMarkerOnMapAndFocus(LatLng(result.data!!.location!!.latitude,result.data.location!!.longitude))
+                    setMarkerOnMapAndFocus(
+                        LatLng(
+                            result.data!!.location!!.latitude,
+                            result.data.location!!.longitude
+                        )
+                    )
                     binding.tvDescription.text = result.data.description
                     binding.tvTitle.text = result.data.title
+                    binding.ivImage.load(result.data.imageUri)
                     val calendar = Calendar.getInstance()
                     calendar.time = result.data.date!!.toDate()
-                    setDateTimeInTextView(calendar,binding.tvDate,requireContext())
+                    setDateTimeInTextView(calendar, binding.tvDate, requireContext())
                 }
-                is Resource.Error ->{
+                is Resource.Error -> {
                     hideLoadingBar()
                     snackbar("Ошибка, попробуйте позже")
                 }
-                is Resource.Loading ->{
+                is Resource.Loading -> {
                     showLoadingBar()
                 }
             }
@@ -136,7 +144,6 @@ class DetailMemoryCardFragment : BaseFragment() {
             }
         }
     }
-
 
 
     override fun onDestroyView() {
