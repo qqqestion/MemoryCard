@@ -49,18 +49,18 @@ class CreateMemoryCardFragment : Fragment(), EasyPermissions.PermissionCallbacks
         requestPermission()
         manager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
         launchMap(savedInstanceState)
         setHasOptionsMenu(true)
-
     }
 
     private fun launchMap(savedInstanceState: Bundle?) {
         binding.mapView.onCreate(savedInstanceState)
-        mapUISettings()
-        moveCameraToUserLocation()
         binding.mapView.getMapAsync { googleMap ->
-            googleMap.uiSettings.isMyLocationButtonEnabled = false
+            googleMap.uiSettings.isMyLocationButtonEnabled = true
             map = googleMap
+            mapUISettings()
+            moveCameraToUserLocation()
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
