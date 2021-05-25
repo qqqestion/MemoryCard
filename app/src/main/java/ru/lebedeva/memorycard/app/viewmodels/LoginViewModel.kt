@@ -20,6 +20,13 @@ class LoginViewModel(
     private val _signInStatus = MutableLiveData<Resource<Unit>>()
     val signInStatus: LiveData<Resource<Unit>> = _signInStatus
 
+    private val _isLoggedIn = MutableLiveData<Resource<Boolean>>()
+    val isLoggedIn: LiveData<Resource<Boolean>> = _isLoggedIn
+
+    fun isLoggedIn() = viewModelScope.launch {
+        _isLoggedIn.postValue(repository.isLoggedIn())
+    }
+
     fun signIn(email: String, password: String) = viewModelScope.launch {
         Timber.d("Sign in")
         if (_signInStatus.value is Resource.Loading) {

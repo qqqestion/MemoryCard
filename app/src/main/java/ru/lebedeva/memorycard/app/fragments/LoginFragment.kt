@@ -35,6 +35,7 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.isLoggedIn()
 
         with(binding) {
             btnGoToRegistration.setOnClickListener {
@@ -49,6 +50,22 @@ class LoginFragment : BaseFragment() {
                 )
             }
         }
+
+        viewModel.isLoggedIn.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.data!!) {
+                        findNavController().navigate(
+                            LoginFragmentDirections.actionLoginFragmentToListMemoryCardFragment()
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    snackbar(it.msg.toString())
+                }
+                is Resource.Loading -> showLoadingBar()
+            }
+        })
 
         viewModel.signInStatus.observe(viewLifecycleOwner, {
             when (it) {

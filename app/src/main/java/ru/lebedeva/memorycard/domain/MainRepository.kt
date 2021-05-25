@@ -48,6 +48,12 @@ class MainRepository(
             }
         }
 
+    suspend fun isLoggedIn(): Resource<Boolean> = withContext(Dispatchers.IO) {
+        return@withContext checkIfNetworkAvailable {
+            Resource.Success(firebase.isLoggedIn)
+        }
+    }
+
     private suspend fun <T> checkIfNetworkAvailable(action: suspend () -> Resource<T>): Resource<T> {
         return when (networkHandler.isNetworkAvailable()) {
             true -> {

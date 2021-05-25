@@ -17,6 +17,9 @@ class FirebaseApi {
 
     private val auth = FirebaseAuth.getInstance()
 
+    val isLoggedIn: Boolean
+        get() = auth.uid != null
+
     val currentUserId: String
         get() = auth.uid!!
 
