@@ -1,16 +1,16 @@
-package ru.lebedeva.memorycard.ui.fragments
+package ru.lebedeva.memorycard.app.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import ru.lebedeva.memorycard.databinding.FragmentDetailMemoryCardBinding
 import ru.lebedeva.memorycard.databinding.FragmentLoginBinding
+import ru.lebedeva.memorycard.databinding.FragmentRegisterBinding
 
-class DetailMemoryCardFragment : Fragment() {
+class RegisterFragment : Fragment() {
 
-    private var _binding: FragmentDetailMemoryCardBinding? = null
+    private var _binding: FragmentRegisterBinding? = null
 
     private val binding get() = _binding!!
 
@@ -19,7 +19,7 @@ class DetailMemoryCardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailMemoryCardBinding.inflate(inflater, container, false)
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
 

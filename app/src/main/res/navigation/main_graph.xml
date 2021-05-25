@@ -6,7 +6,7 @@
 
     <fragment
             android:id="@+id/loginFragment"
-            android:name="ru.lebedeva.memorycard.ui.fragments.LoginFragment"
+            android:name="ru.lebedeva.memorycard.app.fragments.LoginFragment"
             android:label="LoginFragment">
         <action
                 android:id="@+id/action_loginFragment_to_registerFragment"
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
             android:id="@+id/registerFragment"
-            android:name="ru.lebedeva.memorycard.ui.fragments.RegisterFragment"
+            android:name="ru.lebedeva.memorycard.app.fragments.RegisterFragment"
             android:label="RegisterFragment">
         <action
                 android:id="@+id/action_registerFragment_to_listMemoryCardFragment"
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
             android:id="@+id/listMemoryCardFragment"
-            android:name="ru.lebedeva.memorycard.ui.fragments.ListMemoryCardFragment"
+            android:name="ru.lebedeva.memorycard.app.fragments.ListMemoryCardFragment"
             android:label="ListMemoryCardFragment">
         <action
                 android:id="@+id/action_listMemoryCardFragment_to_detailMemoryCardFragment"
@@ -36,10 +36,10 @@
     </fragment>
     <fragment
             android:id="@+id/detailMemoryCardFragment"
-            android:name="ru.lebedeva.memorycard.ui.fragments.DetailMemoryCardFragment"
+            android:name="ru.lebedeva.memorycard.app.fragments.DetailMemoryCardFragment"
             android:label="DetailMemoryCardFragment" />
     <fragment
             android:id="@+id/createMemoryCardFragment"
-            android:name="ru.lebedeva.memorycard.ui.fragments.CreateMemoryCardFragment"
+            android:name="ru.lebedeva.memorycard.app.fragments.CreateMemoryCardFragment"
             android:label="CreateMemoryCardFragment" />
 </navigation>

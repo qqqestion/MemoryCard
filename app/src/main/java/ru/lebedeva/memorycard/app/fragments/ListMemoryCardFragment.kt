@@ -1,4 +1,4 @@
-package ru.lebedeva.memorycard.ui.fragments
+package ru.lebedeva.memorycard.app.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
