@@ -9,7 +9,10 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="primary">#ffab73</color>
+    <color name="login_title_color">#C34E01</color>
+    <color name="reg_button_color">#7E3200</color>
     <color name="secondary">#ffd384</color>
     <color name="highlight">#fff9b0</color>
     <color name="loading">#ffaec0</color>
+    <color name="main_text">#FF000000</color>
 </resources>
