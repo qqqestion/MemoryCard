@@ -2,6 +2,7 @@ package ru.lebedeva.memorycard.app.fragments
 
 import android.os.Bundle
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -23,6 +24,10 @@ class ListMemoryCardFragment : BaseFragment() {
 
     lateinit var cardAdapter: MemoryCardsAdapter
 
+    val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() = Unit
+    }
+
     private val viewModel: ListMemoryCardViewModel by viewModels {
         (activity as MainActivity).viewModelProviderFactory
     }
@@ -38,6 +43,7 @@ class ListMemoryCardFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
         setHasOptionsMenu(true)
         viewModel.getUserCards()
         cardAdapter = MemoryCardsAdapter()
@@ -70,6 +76,16 @@ class ListMemoryCardFragment : BaseFragment() {
                 }
             }
         })
+        viewModel.signOutStatus.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Error -> {
+                    snackbar(it.msg.toString())
+                }
+                is Resource.Success -> {
+                    findNavController().popBackStack()
+                }
+            }
+        })
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_listMemoryCardFragment_to_createMemoryCardFragment)
         }
@@ -86,12 +102,25 @@ class ListMemoryCardFragment : BaseFragment() {
             it.setHomeButtonEnabled(false)
             it.setDisplayHomeAsUpEnabled(false)
         }
-        menu.findItem(R.id.action_save_card).isVisible = false
+        menu.findItem(R.id.action_logout).isVisible = true
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.appbar_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout->{
+                callback.isEnabled = false
+                viewModel.signOut()
+                return true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
 }

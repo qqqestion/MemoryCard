@@ -82,6 +82,23 @@ class DetailMemoryCardFragment : BaseFragment() {
                 }
             }
         })
+
+        viewModel.deleteIsSuccess.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Resource.Success -> {
+                    hideLoadingBar()
+                    snackbar("Карточка удалена")
+                    findNavController().popBackStack()
+                }
+                is Resource.Error -> {
+                    hideLoadingBar()
+                    snackbar("Ошибка, попробуйте позже")
+                }
+                is Resource.Loading -> {
+                    showLoadingBar()
+                }
+            }
+        })
     }
 
     private fun setDateTimeInTextView(
@@ -126,15 +143,21 @@ class DetailMemoryCardFragment : BaseFragment() {
             it.setHomeButtonEnabled(true)
             it.setDisplayHomeAsUpEnabled(true)
         }
+        menu.findItem(R.id.action_delete_card).isVisible = true
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.appbar_menu, menu)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_delete_card ->{
+                viewModel.deleteCardById(memoryCardId)
+                true
+            }
             android.R.id.home -> {
                 findNavController().popBackStack()
                 true

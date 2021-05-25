@@ -100,9 +100,6 @@ class MemoryCardsAdapter : RecyclerView.Adapter<MemoryCardsAdapter.ViewHolder>()
                 DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR
                         or DateUtils.FORMAT_SHOW_TIME
             )
-
         }
     }
-
-
 }

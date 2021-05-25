@@ -32,6 +32,9 @@ class FirebaseApi {
     suspend fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).await()
     }
+    suspend fun signOut(){
+        auth.signOut()
+    }
 
     suspend fun createMemoryCard(card: MemoryCard) {
         cardsCollection.add(card).await()
@@ -59,5 +62,9 @@ class FirebaseApi {
             .get()
             .await()
             .toObject(MemoryCard::class.java)!!
+    }
+
+    suspend fun deleteMemoryCardById(cardId: String): Unit {
+        cardsCollection.document(cardId).delete().await()
     }
 }
