@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
@@ -24,6 +25,12 @@ class LoginFragment : BaseFragment() {
         (activity as MainActivity).viewModelProviderFactory
     }
 
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            requireActivity().finish()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,10 +42,14 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         viewModel.isLoggedIn()
 
         with(binding) {
             btnGoToRegistration.setOnClickListener {
+                callback.isEnabled = false
                 findNavController().navigate(
                     LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
                 )
@@ -55,6 +66,7 @@ class LoginFragment : BaseFragment() {
             when (it) {
                 is Resource.Success -> {
                     if (it.data!!) {
+                        callback.isEnabled = false
                         findNavController().navigate(
                             LoginFragmentDirections.actionLoginFragmentToListMemoryCardFragment()
                         )

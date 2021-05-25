@@ -33,6 +33,9 @@
         <action
                 android:id="@+id/action_listMemoryCardFragment_to_createMemoryCardFragment"
                 app:destination="@id/createMemoryCardFragment" />
+        <action
+                android:id="@+id/action_listMemoryCardFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
     </fragment>
     <fragment
             android:id="@+id/detailMemoryCardFragment"
