@@ -1,4 +1,4 @@
-package ru.lebedeva.memorycard.ui
+package ru.lebedeva.memorycard.app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

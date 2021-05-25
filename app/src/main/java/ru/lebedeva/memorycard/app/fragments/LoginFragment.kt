@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import ru.lebedeva.memorycard.app.BaseFragment
-import ru.lebedeva.memorycard.ui.MainActivity
+import ru.lebedeva.memorycard.app.MainActivity
 import ru.lebedeva.memorycard.app.viewmodels.LoginViewModel
 import ru.lebedeva.memorycard.databinding.FragmentLoginBinding
 import ru.lebedeva.memorycard.domain.Resource
