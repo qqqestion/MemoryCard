@@ -22,7 +22,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -37,7 +36,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
-import com.google.firebase.storage.FirebaseStorage
 import pub.devrel.easypermissions.EasyPermissions
 import ru.lebedeva.memorycard.R
 import ru.lebedeva.memorycard.app.BaseFragment
@@ -96,15 +94,24 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
         launchMap(savedInstanceState)
         setHasOptionsMenu(true)
         binding.ivImage.setOnClickListener {
-//            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-//            intent.action = Intent.ACTION_GET_CONTENT
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            galleryIntent.action = Intent.ACTION_GET_CONTENT
 //            startActivityForResult(
-//                intent,
+//                galleryIntent,
 //                PICK_IMAGE_REQUEST
 //            )
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val chooserIntent = Intent.createChooser(
+                galleryIntent,
+                "Сделайте снимок или выберете фотографию из галереи"
+            )
+            chooserIntent.putExtra(
+                Intent.EXTRA_INITIAL_INTENTS,
+                arrayOf(cameraIntent, galleryIntent)
+            )
             try {
-                startActivityForResult(takePictureIntent, TAKE_IMAGE_REQUEST)
+                startActivityForResult(chooserIntent, TAKE_IMAGE_REQUEST)
             } catch (e: ActivityNotFoundException) {
                 Timber.d(e)
             }
@@ -242,15 +249,17 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.data ?: return
-            filePath = imageUri
-            binding.ivImage.setImageURI(imageUri)
-            binding.ivImage.scaleType = ImageView.ScaleType.FIT_XY
-        } else if (requestCode == TAKE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == TAKE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             Timber.d("Image taken successfully!")
-            bitmap = data?.extras?.get("data") as? Bitmap
-            binding.ivImage.setImageBitmap(bitmap)
+            if (data?.data != null) {
+                val imageUri = data.data!!
+                filePath = imageUri
+                binding.ivImage.setImageURI(imageUri)
+                binding.ivImage.scaleType = ImageView.ScaleType.FIT_XY
+            } else {
+                bitmap = data?.extras?.get("data") as? Bitmap
+                binding.ivImage.setImageBitmap(bitmap)
+            }
         }
     }
 
