@@ -6,9 +6,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
@@ -35,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.storage.FirebaseStorage
 import pub.devrel.easypermissions.EasyPermissions
 import ru.lebedeva.memorycard.R
 import ru.lebedeva.memorycard.app.BaseFragment
@@ -43,6 +46,7 @@ import ru.lebedeva.memorycard.app.viewmodels.CreateMemoryCardViewModel
 import ru.lebedeva.memorycard.databinding.FragmentCreateMemoryCardBinding
 import ru.lebedeva.memorycard.domain.MemoryCard
 import ru.lebedeva.memorycard.domain.Resource
+import timber.log.Timber
 import java.util.*
 
 class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallbacks {
@@ -59,11 +63,15 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
     private var marker: Marker? = null
     private val PICK_IMAGE_REQUEST = 111
 
+    private val TAKE_IMAGE_REQUEST = 222
+
     private var needDatetime = Calendar.getInstance()
     private var isEnterDatetime = false
     private var location: GeoPoint? = null
 
     private var filePath: Uri? = null
+
+    private var bitmap: Bitmap? = null
 
     private val viewModel: CreateMemoryCardViewModel by viewModels {
         (activity as MainActivity).viewModelProviderFactory
@@ -88,12 +96,18 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
         launchMap(savedInstanceState)
         setHasOptionsMenu(true)
         binding.ivImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(
-                intent,
-                PICK_IMAGE_REQUEST
-            )
+//            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+//            intent.action = Intent.ACTION_GET_CONTENT
+//            startActivityForResult(
+//                intent,
+//                PICK_IMAGE_REQUEST
+//            )
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            try {
+                startActivityForResult(takePictureIntent, TAKE_IMAGE_REQUEST)
+            } catch (e: ActivityNotFoundException) {
+                Timber.d(e)
+            }
         }
         binding.tvDate.setOnClickListener {
             pickDateTime()
@@ -233,6 +247,10 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
             filePath = imageUri
             binding.ivImage.setImageURI(imageUri)
             binding.ivImage.scaleType = ImageView.ScaleType.FIT_XY
+        } else if (requestCode == TAKE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            Timber.d("Image taken successfully!")
+            bitmap = data?.extras?.get("data") as? Bitmap
+            binding.ivImage.setImageBitmap(bitmap)
         }
     }
 
@@ -276,31 +294,6 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.mapView.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        binding.mapView.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        binding.mapView.onStop()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.mapView.onPause()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        binding.mapView.onLowMemory()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         binding.mapView.onSaveInstanceState(outState)
@@ -328,7 +321,7 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
             }
             R.id.action_save_card -> {
                 createCard()?.let { card ->
-                    viewModel.createMemoryCard(card)
+                    viewModel.createMemoryCard(card, bitmap)
                 }
                 true
             }
@@ -343,7 +336,7 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
             Snackbar.make(requireView(), "Выберите локации на карте!", Snackbar.LENGTH_SHORT).show()
             return null
         }
-        if (filePath == null) {
+        if (filePath == null && bitmap == null) {
             Snackbar.make(requireView(), "Добавьте фото!", Snackbar.LENGTH_SHORT).show()
             return null
         }
@@ -363,8 +356,32 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
             binding.etTitle.text.toString(),
             Timestamp(needDatetime.time),
             binding.etDescription.text.toString(),
-            filePath.toString()
+            filePath?.toString()
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView.onPause()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView.onLowMemory()
+    }
 }

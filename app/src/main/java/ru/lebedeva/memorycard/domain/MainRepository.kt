@@ -1,12 +1,12 @@
 package ru.lebedeva.memorycard.domain
 
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import android.graphics.Bitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.lebedeva.memorycard.app.FirebaseApi
 import ru.lebedeva.memorycard.app.NetworkHandler
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
 
 class MainRepository(
     private val firebase: FirebaseApi,
@@ -40,12 +40,18 @@ class MainRepository(
             }
         }
 
-    suspend fun createMemoryCard(card: MemoryCard): Resource<Unit> =
+    suspend fun createMemoryCard(card: MemoryCard, bitmap: Bitmap?): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext checkIfNetworkAvailable {
                 card.userId = firebase.currentUserId
                 if (card.imageUri != null) {
                     card.imageUri = firebase.uploadImage(card.imageUri!!)
+                } else if (bitmap != null) {
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    val byteArray: ByteArray = stream.toByteArray()
+                    bitmap.recycle()
+                    card.imageUri = firebase.uploadImage(byteArray)
                 }
                 firebase.createMemoryCard(card)
                 Resource.Success(Unit)

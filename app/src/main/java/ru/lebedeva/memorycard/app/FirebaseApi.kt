@@ -1,5 +1,6 @@
 package ru.lebedeva.memorycard.app
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,6 +46,15 @@ class FirebaseApi {
             .reference
             .child(UUID.randomUUID().toString())
             .putFile(Uri.parse(imageUri))
+            .await()
+        return res.metadata?.reference?.downloadUrl?.await().toString()
+    }
+
+    suspend fun uploadImage(bytes: ByteArray): String {
+        val res = FirebaseStorage.getInstance()
+            .reference
+            .child(UUID.randomUUID().toString())
+            .putBytes(bytes)
             .await()
         return res.metadata?.reference?.downloadUrl?.await().toString()
     }

@@ -1,5 +1,6 @@
 package ru.lebedeva.memorycard.app.viewmodels
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,9 +18,9 @@ class CreateMemoryCardViewModel(
     val uploadCardStatus: LiveData<Resource<Unit>> = _uploadCardStatus
 
 
-    fun createMemoryCard(card: MemoryCard) = viewModelScope.launch {
+    fun createMemoryCard(card: MemoryCard, bitmap: Bitmap?) = viewModelScope.launch {
         _uploadCardStatus.postValue(Resource.Loading())
-        val response = repository.createMemoryCard(card)
+        val response = repository.createMemoryCard(card, bitmap)
         Timber.d("${response.data}")
         _uploadCardStatus.postValue(response)
     }
