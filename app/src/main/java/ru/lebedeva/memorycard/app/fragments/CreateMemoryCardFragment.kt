@@ -96,7 +96,7 @@ class CreateMemoryCardFragment : BaseFragment(), EasyPermissions.PermissionCallb
         binding.ivImage.setOnClickListener {
             val galleryIntent =
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            galleryIntent.action = Intent.ACTION_GET_CONTENT
+//            galleryIntent.action = Intent.ACTION_GET_CONTENT
 //            startActivityForResult(
 //                galleryIntent,
 //                PICK_IMAGE_REQUEST
